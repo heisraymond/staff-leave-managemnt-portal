@@ -14,3 +14,20 @@ export async function loginUser(email: string, password: string) {
 
   return res.json();
 }
+
+
+export async function getProfile(token: string) {
+  const res = await fetch("http://127.0.0.1:8000/api/auth/profile/", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch user profile");
+  }
+
+  return res.json();
+}

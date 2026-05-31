@@ -2,7 +2,7 @@ export type UserRole = "admin" | "supervisor" | "employee";
 
 export type User = {
   id: number;
-  name: string;
+  full_name: string;
   email: string;
   role: UserRole;
   leaveBalance?: number;

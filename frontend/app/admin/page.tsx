@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getUser, logout } from "@/lib/auth";
+import { getProfile } from "@/lib/api";
+import { logout } from "@/lib/auth";
 
 type User = {
   id: number;
@@ -15,31 +16,46 @@ type User = {
 export default function AdminPage() {
   const router = useRouter();
 
-  useEffect(() => {
-    const sessionUser = getUser();
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    if (!sessionUser) {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
       router.push("/");
       return;
     }
 
-    if (sessionUser.role !== "admin") {
-      if (sessionUser.role === "supervisor") {
-        router.push("/supervisor");
-      } else {
-        router.push("/employee");
-      }
-    }
-  }, [router]);
+    const loadUser = async () => {
+      try {
+        const data = await getProfile(token);
 
-  const sessionUser = getUser() as User | null;
+        // role-based protection (backend truth)
+        if (data.role !== "admin") {
+          if (data.role === "supervisor") router.push("/supervisor");
+          else router.push("/employee");
+          return;
+        }
+
+        setUser(data);
+      } catch (error) {
+        console.error("Failed to load user:", error);
+        router.push("/");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUser();
+  }, [router]);
 
   const handleLogout = () => {
     logout();
     router.push("/");
   };
 
-  if (!sessionUser || sessionUser.role !== "admin") {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-gray-500">Loading admin dashboard...</p>
@@ -47,12 +63,16 @@ export default function AdminPage() {
     );
   }
 
+  if (!user) return null;
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
 
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-black">Admin Dashboard</h1>
+        <h1 className="text-2xl font-bold text-black">
+          Admin Dashboard
+        </h1>
 
         <button
           onClick={handleLogout}
@@ -67,18 +87,25 @@ export default function AdminPage() {
         <h2 className="text-lg font-semibold mb-4">Profile</h2>
 
         <div className="space-y-2">
-          <p><span className="font-medium">Name:</span> {sessionUser.name}</p>
-          <p><span className="font-medium">Email:</span> {sessionUser.email}</p>
-          <p><span className="font-medium">Role:</span> {sessionUser.role}</p>
+          <p>
+            <span className="font-medium">Name:</span> {user.name}
+          </p>
+          <p>
+            <span className="font-medium">Email:</span> {user.email}
+          </p>
+          <p>
+            <span className="font-medium">Role:</span> {user.role}
+          </p>
           <p>
             <span className="font-medium">Leave Balance:</span>{" "}
-            {sessionUser.leaveBalance ?? "N/A"} days
+            {user.leaveBalance ?? "N/A"} days
           </p>
         </div>
       </div>
 
       {/* ACTIONS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
         <div className="card p-4">
           <h3 className="font-semibold">All Employees</h3>
           <p className="text-sm text-gray-500">View staff list</p>
@@ -93,6 +120,7 @@ export default function AdminPage() {
           <h3 className="font-semibold">System Settings</h3>
           <p className="text-sm text-gray-500">Manage configurations</p>
         </div>
+
       </div>
     </div>
   );
