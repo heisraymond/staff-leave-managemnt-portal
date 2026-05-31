@@ -8,7 +8,6 @@ class CustomUserAdmin(BaseUserAdmin):
 
     model = User
 
-    # What you see in the list view
     list_display = (
         "email",
         "full_name",
@@ -34,7 +33,7 @@ class CustomUserAdmin(BaseUserAdmin):
 
     ordering = ("email",)
 
-    # Main edit form (IMPORTANT FIXED)
+    
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         ("Personal Info", {"fields": ("full_name",)}),
@@ -52,7 +51,7 @@ class CustomUserAdmin(BaseUserAdmin):
         }),
     )
 
-    # Add user form (creates user in admin)
+
     add_fieldsets = (
         (None, {
             "classes": ("wide",),
@@ -70,5 +69,5 @@ class CustomUserAdmin(BaseUserAdmin):
         }),
     )
 
-    # Remove read-only mistake (IMPORTANT)
+   
     readonly_fields = ("last_login", "date_joined")

@@ -31,7 +31,6 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
 
-    # 🔥 REMOVE username completely
     username = None
 
     ROLE_CHOICES = [
@@ -87,11 +86,10 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # 🔥 CRITICAL AUTH SETTINGS
+  
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["full_name"]
 
-    # 🔥 ATTACH MANAGER (THIS FIXES YOUR ERROR)
     objects = UserManager()
 
     def __str__(self):
