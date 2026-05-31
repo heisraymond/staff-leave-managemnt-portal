@@ -1,4 +1,20 @@
-export function setSession(data: any) {
+export type UserRole = "admin" | "supervisor" | "employee";
+
+export type User = {
+  id: number;
+  name: string;
+  email: string;
+  role: UserRole;
+  leaveBalance?: number;
+};
+
+export type LoginResponse = {
+  access: string;
+  refresh?: string;
+  user: User;
+};
+
+export function setSession(data: LoginResponse) {
   localStorage.setItem("token", data.access);
   localStorage.setItem("user", JSON.stringify(data.user));
 }
