@@ -3,15 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getProfile } from "@/lib/api";
-import { logout } from "@/lib/auth";
-
-type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: "admin" | "supervisor" | "employee";
-  leaveBalance?: number;
-};
+import { logout, User } from "@/lib/auth";
 
 type LeaveRequest = {
   id: number;
@@ -28,8 +20,18 @@ export default function SupervisorPage() {
 
   // dummy data for now (later comes from Django API)
   const [requests, setRequests] = useState<LeaveRequest[]>([
-    { id: 1, employeeName: "John Doe", type: "Annual Leave", status: "pending" },
-    { id: 2, employeeName: "Jane Smith", type: "Sick Leave", status: "pending" },
+    {
+      id: 1,
+      employeeName: "John Doe",
+      type: "Annual Leave",
+      status: "pending",
+    },
+    {
+      id: 2,
+      employeeName: "Jane Smith",
+      type: "Sick Leave",
+      status: "pending",
+    },
   ]);
 
   useEffect(() => {
@@ -70,9 +72,7 @@ export default function SupervisorPage() {
 
   const handleAction = (id: number, action: "approved" | "rejected") => {
     setRequests((prev) =>
-      prev.map((req) =>
-        req.id === id ? { ...req, status: action } : req
-      )
+      prev.map((req) => (req.id === id ? { ...req, status: action } : req)),
     );
   };
 
@@ -88,17 +88,11 @@ export default function SupervisorPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-black">
-          Supervisor Dashboard
-        </h1>
+        <h1 className="text-2xl font-bold text-black">Supervisor Dashboard</h1>
 
-        <button
-          onClick={handleLogout}
-          className="btn btn-secondary"
-        >
+        <button onClick={handleLogout} className="btn btn-secondary">
           Logout
         </button>
       </div>
@@ -108,17 +102,25 @@ export default function SupervisorPage() {
         <h2 className="text-lg font-semibold mb-4">Profile</h2>
 
         <div className="space-y-2">
-          <p><span className="font-medium">Name:</span> {user.name}</p>
-          <p><span className="font-medium">Email:</span> {user.email}</p>
-          <p><span className="font-medium">Role:</span> {user.role}</p>
+          <p>
+            <span className="font-medium">Name:</span> {user.full_name}
+          </p>
+          <p>
+            <span className="font-medium">Email:</span> {user.email}
+          </p>
+          <p>
+            <span className="font-medium">Role:</span> {user.role}
+          </p>
+          <p>
+            <span className="font-medium">Leave Balance:</span>{" "}
+            {user.annual_leave_balance ?? "N/A"} days
+          </p>
         </div>
       </div>
 
       {/* LEAVE REQUESTS */}
       <div className="card p-6">
-        <h2 className="text-lg font-semibold mb-4">
-          Pending Leave Requests
-        </h2>
+        <h2 className="text-lg font-semibold mb-4">Pending Leave Requests</h2>
 
         <div className="space-y-4">
           {requests.map((req) => (
@@ -136,8 +138,8 @@ export default function SupervisorPage() {
                       req.status === "pending"
                         ? "text-yellow-500"
                         : req.status === "approved"
-                        ? "text-green-600"
-                        : "text-red-500"
+                          ? "text-green-600"
+                          : "text-red-500"
                     }
                   >
                     {req.status}

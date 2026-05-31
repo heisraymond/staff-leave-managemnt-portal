@@ -10,6 +10,9 @@ class SimpleUserSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     supervisor = SimpleUserSerializer(read_only=True)
 
+    annual_leave_balance = serializers.FloatField()
+    sick_leave_balance = serializers.FloatField()
+
     class Meta:
         model = User
         fields = [

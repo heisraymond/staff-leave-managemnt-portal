@@ -4,14 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getProfile } from "@/lib/api";
 import { logout } from "@/lib/auth";
+import { User } from "@/lib/auth";
 
-type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: "admin" | "supervisor" | "employee";
-  leaveBalance?: number;
-};
+
 
 export default function AdminPage() {
   const router = useRouter();
@@ -31,7 +26,7 @@ export default function AdminPage() {
       try {
         const data = await getProfile(token);
 
-        // role-based protection (backend truth)
+        // role-based protection 
         if (data.role !== "admin") {
           if (data.role === "supervisor") router.push("/supervisor");
           else router.push("/employee");
@@ -88,7 +83,7 @@ export default function AdminPage() {
 
         <div className="space-y-2">
           <p>
-            <span className="font-medium">Name:</span> {user.name}
+            <span className="font-medium">Name:</span> {user.full_name}
           </p>
           <p>
             <span className="font-medium">Email:</span> {user.email}
@@ -98,7 +93,7 @@ export default function AdminPage() {
           </p>
           <p>
             <span className="font-medium">Leave Balance:</span>{" "}
-            {user.leaveBalance ?? "N/A"} days
+            {user.annual_leave_balance ?? "N/A"} days
           </p>
         </div>
       </div>

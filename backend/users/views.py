@@ -5,7 +5,6 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 
-from .models import User
 from .serializers import UserSerializer
 from .permissions import IsAdmin, IsSupervisor, IsEmployee
 

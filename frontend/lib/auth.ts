@@ -1,11 +1,27 @@
 export type UserRole = "admin" | "supervisor" | "employee";
 
+export type Supervisor = {
+  id: number;
+  full_name: string;
+  email: string;
+  role: UserRole;
+};
+
 export type User = {
   id: number;
   full_name: string;
   email: string;
   role: UserRole;
-  leaveBalance?: number;
+
+  department: string | null;
+
+  supervisor: Supervisor | null;
+
+  annual_leave_balance: number;
+  sick_leave_balance: number;
+
+  created_at: string;
+  updated_at: string;
 };
 
 export type LoginResponse = {
