@@ -32,6 +32,9 @@ class LeaveRequest(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
 
+    def calculate_days(self):
+        return (self.end_date - self.start_date).days + 1
+
     total_days = models.DecimalField(
         max_digits=4,
         decimal_places=1
