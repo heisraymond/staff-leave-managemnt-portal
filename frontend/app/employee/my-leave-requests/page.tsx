@@ -34,14 +34,11 @@ export default function MyLeaveRequestsPage() {
           return;
         }
 
-        const res = await fetch(
-          "http://127.0.0.1:8000/api/leave/my/",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const res = await fetch("http://127.0.0.1:8000/api/leave/my/", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const data: LeaveRequest[] = await res.json();
 
@@ -50,7 +47,6 @@ export default function MyLeaveRequestsPage() {
         }
 
         setRequests(data);
-
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
@@ -108,17 +104,11 @@ export default function MyLeaveRequestsPage() {
   // -----------------------------------
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-
       {/* HEADER */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-black">
-          My Leave Requests
-        </h1>
+        <h1 className="text-3xl font-bold text-black">My Leave Requests</h1>
 
-        <button
-          onClick={() => router.push("/employee")}
-          className="btn btn-primary"
-        >
+        <button onClick={() => router.push("/employee")} className="btn btn-secondary cursor-pointer">
           Create Request
         </button>
       </div>
@@ -126,7 +116,6 @@ export default function MyLeaveRequestsPage() {
       {/* EMPTY STATE */}
       {requests.length === 0 ? (
         <div className="card p-10 text-center max-w-2xl mx-auto">
-
           <h2 className="text-2xl font-semibold mb-3">
             No Leave Requests Found
           </h2>
@@ -137,21 +126,16 @@ export default function MyLeaveRequestsPage() {
 
           <button
             onClick={() => router.push("/employee")}
-            className="btn btn-primary"
+            className="btn btn-secondary cursor-pointer"
           >
             Create Leave Request
           </button>
-
         </div>
       ) : (
-
         /* TABLE */
         <div className="card p-6 overflow-x-auto">
-
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold">
-              Leave History
-            </h2>
+            <h2 className="text-2xl font-bold text-white">Leave History</h2>
 
             <p className="text-sm text-gray-500">
               Total Requests: {requests.length}
@@ -159,10 +143,8 @@ export default function MyLeaveRequestsPage() {
           </div>
 
           <table className="w-full border-collapse">
-
             <thead>
               <tr className="border-b bg-blue-1000 text-left">
-
                 <th className="p-3">Type</th>
                 <th className="p-3">Start Date</th>
                 <th className="p-3">End Date</th>
@@ -170,57 +152,37 @@ export default function MyLeaveRequestsPage() {
                 <th className="p-3">Reason</th>
                 <th className="p-3">Status</th>
                 <th className="p-3">Comment</th>
-
               </tr>
             </thead>
 
             <tbody>
               {requests.map((request) => (
-                <tr
-                  key={request.id}
-                  className="border-b hover:bg-blue-900"
-                >
+                <tr key={request.id} className="border-b hover:bg-blue-900">
+                  <td className="p-3 capitalize">{request.leave_type}</td>
 
-                  <td className="p-3 capitalize">
-                    {request.leave_type}
-                  </td>
+                  <td className="p-3">{request.start_date}</td>
 
-                  <td className="p-3">
-                    {request.start_date}
-                  </td>
+                  <td className="p-3">{request.end_date}</td>
 
-                  <td className="p-3">
-                    {request.end_date}
-                  </td>
+                  <td className="p-3">{request.total_days}</td>
 
-                  <td className="p-3">
-                    {request.total_days}
-                  </td>
-
-                  <td className="p-3 max-w-xs truncate">
-                    {request.reason}
-                  </td>
+                  <td className="p-3 max-w-xs truncate">{request.reason}</td>
 
                   <td className="p-3">
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                        request.status
+                        request.status,
                       )}`}
                     >
                       {request.status}
                     </span>
                   </td>
 
-                  <td className="p-3">
-                    {request.review_comment || "-"}
-                  </td>
-
+                  <td className="p-3">{request.review_comment || "-"}</td>
                 </tr>
               ))}
             </tbody>
-
           </table>
-
         </div>
       )}
     </div>

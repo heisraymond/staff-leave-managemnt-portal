@@ -1,9 +1,16 @@
 from rest_framework import serializers
+from users.models import User
 from .models import LeaveRequest
 from datetime import date, timedelta
 
+class SimpleUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "full_name", "email"]
+
 
 class LeaveRequestSerializer(serializers.ModelSerializer):
+    user = SimpleUserSerializer(read_only=True)
 
     class Meta:
         model = LeaveRequest

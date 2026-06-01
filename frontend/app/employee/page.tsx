@@ -259,10 +259,10 @@ export default function EmployeePage() {
       </div>
 
       {/* QUICK ACTIONS */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="flex justify-center mb-6 space-x-4">
         <button
           onClick={() => router.push("/employee/my-leave-requests")}
-          className="btn text-black"
+          className="btn btn-secondary cursor-pointer"
         >
           My Leave Requests
         </button>

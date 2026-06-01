@@ -55,3 +55,22 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
+
+
+class EmployeeBalanceSerializer(serializers.ModelSerializer):
+    employee = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            "employee",
+            "annual_leave_balance",
+            "sick_leave_balance",
+        ]
+
+    def get_employee(self, obj):
+        return {
+            "id": obj.id,
+            "full_name": obj.full_name,
+            "email": obj.email,
+        }

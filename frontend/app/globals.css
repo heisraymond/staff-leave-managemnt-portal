@@ -68,7 +68,7 @@ body {
 }
 
 body {
-  background: var(--background);
+  background: #f9fafb;;
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, -apple-system, Arial,
     sans-serif;
