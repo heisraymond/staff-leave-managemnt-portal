@@ -260,8 +260,12 @@ export default function EmployeePage() {
 
       {/* QUICK ACTIONS */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="card p-4">My Leave History</div>
-        <div className="card p-4">Leave Calendar</div>
+        <button
+          onClick={() => router.push("/employee/my-leave-requests")}
+          className="btn text-black"
+        >
+          My Leave Requests
+        </button>
       </div>
     </div>
   );

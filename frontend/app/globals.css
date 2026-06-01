@@ -26,14 +26,14 @@
 ------------------------------*/
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #f4f6f8;
+    --background: #f7fafd;
     --foreground: #e5e7eb;
 
     --card: #f1f3f6;
-    --border: #f7f7f8;
+    --border: #e1e4e8;
 
     --primary: #f9fafb;
-    --primary-foreground: #f5f6f8;
+    --primary-foreground: #0b1220;
 
     --muted: #9ca3af;
     --ring: rgba(255, 255, 255, 0.15);
