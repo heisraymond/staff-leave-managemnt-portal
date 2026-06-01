@@ -43,18 +43,32 @@ class LeaveRequestSerializer(serializers.ModelSerializer):
         request = self.context["request"]
         user = request.user
 
-        # overlapping leave request check
-        overlapping = LeaveRequest.objects.filter(
+        #  SAME USER OVERLAP CHECK
+        user_overlap = LeaveRequest.objects.filter(
             user=user,
             status__in=["pending", "approved"],
             start_date__lte=end_date,
             end_date__gte=start_date,
         )
 
-        if overlapping.exists():
+        if user_overlap.exists():
             raise serializers.ValidationError({
                 "non_field_errors": [
                     "You already have an overlapping leave request."
+                ]
+            })
+
+        # SYSTEM-WIDE DATE CONFLICT CHECK
+        system_overlap = LeaveRequest.objects.filter(
+            status__in=["pending", "approved"],
+            start_date__lte=end_date,
+            end_date__gte=start_date,
+        ).exclude(user=user)
+
+        if system_overlap.exists():
+            raise serializers.ValidationError({
+                "non_field_errors": [
+                    "Another employee already has leave during these dates."
                 ]
             })
 
@@ -64,16 +78,25 @@ class LeaveRequestSerializer(serializers.ModelSerializer):
             end_date
         )
 
-        # annual leave balance check
-        if (
-            data.get("leave_type") == "annual"
-            and hasattr(user, "annual_leave_balance")
-        ):
+
+        # LEAVE BALANCE VALIDATION
+        leave_type = data.get("leave_type")
+        # Annual Leave
+        if leave_type == "annual":
             if user.annual_leave_balance < total_days:
                 raise serializers.ValidationError({
-                    "leave_balance":
-                    "Insufficient annual leave balance."
-                })
+                "leave_balance":
+                f"Insufficient annual leave balance. Remaining balance is {user.annual_leave_balance} days."
+        })
+            
+        # Sick Leave
+        elif leave_type == "sick":
+
+            if user.sick_leave_balance < total_days:
+                raise serializers.ValidationError({
+                "leave_balance":
+                f"Insufficient sick leave balance. Remaining balance is {user.sick_leave_balance} days."
+        })
 
         return data
 
